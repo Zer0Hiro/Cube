@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>  
+#include <windows.h>
 #define WIDTH 34
 #define HEIGHT 20
 
@@ -24,14 +24,14 @@ int main()
     float A = 0;
     v2 vector;
     v2 *pvector = &vector;
-    while(1)
+    while (1)
     {
         vector.x = x;
         vector.y = y;
         A += 0.1;
-        //A = fmod(A,3.14);
+        // A = fmod(A,3.14);
         char buffer[WIDTH * HEIGHT];
-        memset(buffer, ' ', sizeof(buffer)); 
+        memset(buffer, ' ', sizeof(buffer));
         rotate(A, pvector);
         buff_w(buffer, pvector);
         print_v(buffer);
@@ -57,13 +57,13 @@ void buff_w(char *buf, v2 *vec)
 
 void print_v(char *buf)
 {
-    int i,j;
+    int i, j;
     system("cls");
-    for(j = 0; j < HEIGHT; j++)
+    for (j = 0; j < HEIGHT; j++)
     {
         for (i = 0; i < WIDTH; i++)
         {
-            int temp = i + j*WIDTH;
+            int temp = i + j * WIDTH;
             printf("%c", buf[temp]);
             printf("%c", buf[temp]);
         }
