@@ -29,13 +29,12 @@ int main()
         vector.x = x;
         vector.y = y;
         A += 0.1;
-        // A = fmod(A,3.14);
         char buffer[WIDTH * HEIGHT];
         memset(buffer, ' ', sizeof(buffer));
         rotate(A, pvector);
         buff_w(buffer, pvector);
         print_v(buffer);
-        Sleep(100);
+        Sleep(500);
     }
     return 0;
 }
