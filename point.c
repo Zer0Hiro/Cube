@@ -34,7 +34,7 @@ int main()
         rotate(A, pvector);
         buff_w(buffer, pvector);
         print_v(buffer);
-        Sleep(500);
+        Sleep(50);
     }
     return 0;
 }
