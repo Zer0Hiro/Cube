@@ -6,66 +6,91 @@
 #define WIDTH 34
 #define HEIGHT 20
 
-typedef struct vector
-{
-    int x;
-    int y;
-} v2;
+// Size of screen
+const float cWidth = 40;
 
-void rotate(float A, v2 *vec);
-void print_v(char *buf);
-void buff_w(char *buf, v2 *vec);
+// Buffers for image storage
+char buffer[WIDTH * HEIGHT];
+// Coordinates of projection z-buffering
+float zbuffer[WIDTH * HEIGHT];
+int background = ' ';
+float xproj, yproj; // projection position
+float zdist; // distance from camera to screen
+int screenpos; //position of a point on the screen 
+float ooz; // z-buffer 1/z
 
-// screen size
+float x, y, z; // Point coords
+float A, B, C; // Angle
+
+//  calculate XYZ for a point
+float calcX(int i, int j, int k);
+float calcY(int i, int j, int k);
+float calcZ(int i, int j, int k);
+
+// Calculate coordinates of a point
+void calculatePoint(int i, int j, int k, int sym);
 
 int main()
 {
-    int x = 10, y = 0;
-    float A = 0;
-    v2 vector;
-    v2 *pvector = &vector;
+    int i, j, k;
+    system("cls");
+
     while (1)
     {
-        vector.x = x;
-        vector.y = y;
-        A += 0.1;
-        char buffer[WIDTH * HEIGHT];
-        memset(buffer, ' ', sizeof(buffer));
-        rotate(A, pvector);
-        buff_w(buffer, pvector);
-        print_v(buffer);
-        Sleep(500);
-    }
-    return 0;
-}
-
-void rotate(float A, v2 *vec)
-{
-    int x1 = (int)(vec->x * cos(A) - vec->y * sin(A));
-    int y1 = (int)(vec->x * sin(A) + vec->y * cos(A));
-    vec->x = x1;
-    vec->y = y1;
-}
-
-void buff_w(char *buf, v2 *vec)
-{
-    int pos_x = WIDTH / 2 + vec->x;
-    int pos_y = HEIGHT / 2 + vec->y;
-    buf[WIDTH * pos_y + pos_x] = '@';
-}
-
-void print_v(char *buf)
-{
-    int i, j;
-    system("cls");
-    for (j = 0; j < HEIGHT; j++)
-    {
-        for (i = 0; i < WIDTH; i++)
+        memset(buffer, background, WIDTH * HEIGHT);
+        memset(zbuffer, 0, WIDTH * HEIGHT);
+        for (i = -cWidth / 2; i < cWidth; i += 0.1)
         {
-            int temp = i + j * WIDTH;
-            printf("%c", buf[temp]);
-            printf("%c", buf[temp]);
+            for (j = -cWidth / 2; j < cWidth; j += 0.1)
+                calculatePoint(i, -cWidth / 2, j, '@');
         }
-        printf("\n");
+        printf("\x1b[H");
+
+    }
+}
+
+// TO DO
+// REWORK THIS PART AS ONE STRUCT WITH ONE MATRIX 
+
+// Calc coordinates of X
+float calcX(int i, int j, int k)
+{
+    int X = j * sin(A) * sin(B) * cos(C) - k * cos(A) * sin(B) * cos(C) + j * cos(A) * sin(C) + k * sin(A) * sin(C) + i * cos(B) * cos(C);
+
+    return X;
+}
+
+// Calc coordinates of Y
+float calcY(int i, int j, int k)
+{
+    int Y = j * cos(A) * cos(C) + k * sin(A) * cos(C) - j * sin(A) * sin(B) * sin(C) + k * cos(A) * sin(B) * sin(C) - i * cos(B) * sin(C);
+
+    return Y;
+}
+
+// Calc coordinates of Z
+float calcZ(int i, int j, int k)
+{
+    int Z = k * cos(A) * sin(B) - j * sin(A) * cos(B) + i * sin(B);
+}
+
+
+void calculatePoint(int i, int j, int k, int sym)
+{
+    x = calcX(i, j, k);
+    y = calcY(i, j, k);
+    z = calcZ(i, j, k);
+    ooz = 1 / z;
+    xproj = (int)(WIDTH / 2 + x * zdist * ooz);
+    yproj = (int)(HEIGHT / 2 + y * zdist * ooz);
+    screenpos = xproj + yproj * WIDTH;
+
+    if (screenpos >= 0 && screenpos < WIDTH * HEIGHT)
+    {
+        if (ooz > zbuffer[screenpos])
+        {
+            zbuffer[screenpos] = ooz;
+            buffer[screenpos] = sym;
+        }
     }
 }
