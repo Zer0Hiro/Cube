@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
-#define WIDTH 80
-#define HEIGHT 44
+#define WIDTH 100
+#define HEIGHT 34
 
 // Size of cube
 const float cWidth = 40;
@@ -36,6 +36,7 @@ int main()
     float i, j;
     int k;
     system("cls");
+
     while (1)
     {
         memset(buffer, background, WIDTH * HEIGHT);
@@ -46,8 +47,10 @@ int main()
             for (j = -cWidth / 2; j < cWidth / 2; j += 0.23)
                 calculatePoint(i, j, -cWidth / 2, '@');
         }
-        system("cls");
-        //printf("\x1b[H");
+
+        // Move cursor to home position
+        printf("%c[%d;%df", 0x1B, 0, 0);
+
         for (k = 0; k < WIDTH * HEIGHT; k++)
         {
             putchar(k % WIDTH ? buffer[k] : 10);
