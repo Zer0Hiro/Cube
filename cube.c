@@ -4,7 +4,7 @@
 #include <string.h>
 #include <windows.h>
 #define WIDTH 100
-#define HEIGHT 34
+#define HEIGHT 40
 
 // Size of cube
 const float cWidth = 40;
@@ -18,8 +18,8 @@ char *colorbuffer[WIDTH * HEIGHT];
 
 int background = ' ';
 int xproj, yproj; // projection position
-int cam = 100;    // distance from camera to object
-float zdist = 45; // distance from camera to screen
+int cam = 110;    // distance from camera to object
+float zdist = 40; // distance from camera to screen
 int screenpos;    // position of a point on the screen
 float ooz;        // z-buffer 1/z
 
@@ -38,6 +38,8 @@ int main()
 {
     float i, j;
     int k;
+    char* lastcolor, *newcolor;
+
     system("cls");
 
     while (1)
@@ -45,9 +47,9 @@ int main()
         memset(buffer, background, sizeof(buffer));
         memset(zbuffer, 0, sizeof(zbuffer));
 
-        for (i = -cWidth / 2; i < cWidth / 2; i += 0.34)
+        for (i = -cWidth / 2; i < cWidth / 2; i += 0.23)
         {
-            for (j = -cWidth / 2; j < cWidth / 2; j += 0.34)
+            for (j = -cWidth / 2; j < cWidth / 2; j += 0.23)
             {
                 calculatePoint(i, j, cWidth / 2, '@', "\033[31m");  // Z fixed
                 calculatePoint(i, j, -cWidth / 2, '#', "\033[32m"); // -Z fixed
@@ -68,17 +70,20 @@ int main()
         for (k = 0; k < WIDTH * HEIGHT; k++)
         {
             // Color swap
-            if (buffer[k] != ' ')
-                printf("%s", colorbuffer[k]);
-            else
-                printf("\033[0m");
+            newcolor = (buffer[k] != ' ') ? colorbuffer[k] : "\033[0m";
+            if (strcmp(lastcolor, newcolor) != 0)
+            {
+                lastcolor = newcolor;
+                printf("%s", newcolor);
+            }
 
+            // Print Char
             putchar(k % WIDTH ? buffer[k] : '\n');
         }
 
-        A = 0;  // X rotation
-        B += 0.07;  // Y rotation
-        C = 0; // Z rotation
+        C += 0.01; // X rotation (roll)
+        B += 0.05; // Y rotation (pitch)
+        A += 0.07; // Z rotation (yaw)
         Sleep(10);
     }
 }
@@ -89,7 +94,7 @@ int main()
 // Calc coordinates of X
 float calcX(int i, int j, int k)
 {
-    float X = j * sin(A) * sin(B) * cos(C) - k * cos(A) * sin(B) * cos(C) + j * cos(A) * sin(C) + k * sin(A) * sin(C) + i * cos(B) * cos(C);
+    float X = i * cos(B) * cos(C) + j * cos(B) * sin(C) - k * sin(B);
 
     return X;
 }
@@ -97,7 +102,7 @@ float calcX(int i, int j, int k)
 // Calc coordinates of Y
 float calcY(int i, int j, int k)
 {
-    float Y = j * cos(A) * cos(C) + k * sin(A) * cos(C) - j * sin(A) * sin(B) * sin(C) + k * cos(A) * sin(B) * sin(C) - i * cos(B) * sin(C);
+    float Y = i * (sin(A) * sin(B) * cos(C) - cos(A) * sin(C)) + j * (sin(A) * sin(B) * sin(C) + (cos(A) * cos(C))) + k * sin(A) * cos(B);
 
     return Y;
 }
@@ -105,7 +110,7 @@ float calcY(int i, int j, int k)
 // Calc coordinates of Z
 float calcZ(int i, int j, int k)
 {
-    float Z = k * cos(A) * sin(B) - j * sin(A) * cos(B) + i * sin(B);
+    float Z = i * (cos(A) * sin(B) * cos(C) + sin(A) * cos(C)) + j * (cos(A) * sin(B) * sin(C) - sin(A) * cos(C)) + k * cos(A) * cos(B);
 
     return Z;
 }
