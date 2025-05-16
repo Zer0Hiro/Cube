@@ -39,8 +39,8 @@ int main()
 
     while (1)
     {
-        memset(buffer, background, WIDTH * HEIGHT);
-        memset(zbuffer, 0, WIDTH * HEIGHT * 4);
+        memset(buffer, background, sizeof(buffer));
+        memset(zbuffer, 0, sizeof(zbuffer));
 
         for (i = -cWidth / 2; i < cWidth / 2; i += 0.23)
         {
@@ -53,7 +53,7 @@ int main()
 
         for (k = 0; k < WIDTH * HEIGHT; k++)
         {
-            putchar(k % WIDTH ? buffer[k] : 10);
+            putchar(k % WIDTH ? buffer[k] : '\n');
         }
         A += 0.03;
         B += 0.03;
