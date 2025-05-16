@@ -51,8 +51,8 @@ int main()
             {
                 calculatePoint(i, j, cWidth / 2, '@', "\033[31m");  // Z fixed
                 calculatePoint(i, j, -cWidth / 2, '#', "\033[32m"); // -Z fixed
-                //calculatePoint(cWidth / 2, i, j, '%', "\033[33m");  // X fixed
-                //calculatePoint(-cWidth / 2, i, j, '&', "\033[0m");  // -X fixed
+                calculatePoint(cWidth / 2, i, j, '%', "\033[33m");  // X fixed
+                calculatePoint(-cWidth / 2, i, j, '&', "\033[0m");  // -X fixed
                 calculatePoint(i, cWidth / 2, j, 'O', "\033[34m");  // Y fixed
                 calculatePoint(i, -cWidth / 2, j, 'H', "\033[35m"); // -Y fixed
             }
@@ -61,6 +61,10 @@ int main()
         // Move cursor to home position
         printf("%c[%d;%df", 0x1B, 0, 0);
 
+        // Coordinates of X Y Z
+        printf("%0.2f %0.2f %0.2f\n", x, y, z);
+
+        // Print all points
         for (k = 0; k < WIDTH * HEIGHT; k++)
         {
             // Color swap
@@ -71,9 +75,10 @@ int main()
 
             putchar(k % WIDTH ? buffer[k] : '\n');
         }
-        A = 0;     // X rotation
-        B = 20;    // Y rotation
-        C += 0.1; // Z rotation
+
+        A = 0;  // X rotation
+        B += 0.07;  // Y rotation
+        C = 0; // Z rotation
         Sleep(10);
     }
 }
