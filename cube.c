@@ -16,7 +16,7 @@ float zbuffer[WIDTH * HEIGHT];
 int background = ' ';
 int xproj, yproj; // projection position
 int cam = 100;
-float zdist = 40; // distance from camera to screen
+float zdist = 45; // distance from camera to screen
 int screenpos;    // position of a point on the screen
 float ooz;        // z-buffer 1/z
 
@@ -45,7 +45,14 @@ int main()
         for (i = -cWidth / 2; i < cWidth / 2; i += 0.23)
         {
             for (j = -cWidth / 2; j < cWidth / 2; j += 0.23)
-                calculatePoint(i, j, -cWidth / 2, '@');
+            {
+                calculatePoint(i, j, cWidth / 2, '@');  // 1
+                calculatePoint(i, j, -cWidth / 2, '#'); // 2
+                calculatePoint(cWidth / 2, i, j, '%');  // 3
+                calculatePoint(-cWidth / 2, i, j, '&'); // 4
+                calculatePoint(i, cWidth / 2, j, 'O');  // 5
+                calculatePoint(i, -cWidth / 2, j, 'H'); // 6
+            }
         }
 
         // Move cursor to home position
