@@ -38,7 +38,7 @@ int main()
 {
     float i, j;
     int k;
-    char* lastcolor, *newcolor;
+    char *lastcolor, *newcolor;
 
     system("cls");
 
@@ -47,9 +47,9 @@ int main()
         memset(buffer, background, sizeof(buffer));
         memset(zbuffer, 0, sizeof(zbuffer));
 
-        for (i = -cWidth / 2; i < cWidth / 2; i += 0.23)
+        for (i = -cWidth / 2; i < cWidth / 2; i += 0.34)
         {
-            for (j = -cWidth / 2; j < cWidth / 2; j += 0.23)
+            for (j = -cWidth / 2; j < cWidth / 2; j += 0.34)
             {
                 calculatePoint(i, j, cWidth / 2, '@', "\033[31m");  // Z fixed
                 calculatePoint(i, j, -cWidth / 2, '#', "\033[32m"); // -Z fixed
@@ -81,9 +81,9 @@ int main()
             putchar(k % WIDTH ? buffer[k] : '\n');
         }
 
-        C += 0.01; // X rotation (roll)
+        C += 0.05; // X rotation (roll)
         B += 0.05; // Y rotation (pitch)
-        A += 0.07; // Z rotation (yaw)
+        A += 0.05; // Z rotation (yaw)
         Sleep(10);
     }
 }
@@ -91,36 +91,34 @@ int main()
 // TO DO
 // REWORK THIS PART AS ONE STRUCT WITH ONE MATRIX
 
-// Calc coordinates of X
-float calcX(int i, int j, int k)
-{
-    float X = i * cos(B) * cos(C) + j * cos(B) * sin(C) - k * sin(B);
-
-    return X;
-}
-
-// Calc coordinates of Y
-float calcY(int i, int j, int k)
-{
-    float Y = i * (sin(A) * sin(B) * cos(C) - cos(A) * sin(C)) + j * (sin(A) * sin(B) * sin(C) + (cos(A) * cos(C))) + k * sin(A) * cos(B);
-
-    return Y;
-}
-
-// Calc coordinates of Z
-float calcZ(int i, int j, int k)
-{
-    float Z = i * (cos(A) * sin(B) * cos(C) + sin(A) * cos(C)) + j * (cos(A) * sin(B) * sin(C) - sin(A) * cos(C)) + k * cos(A) * cos(B);
-
-    return Z;
-}
-
 void calculatePoint(int i, int j, int k, int sym, char *color)
 {
-    x = calcX(i, j, k);
-    y = calcY(i, j, k);
-    z = calcZ(i, j, k) + cam;
+
+    // Sines and Cosines
+    float sinA = sin(A), cosA = cos(A); // X-axis rotation
+    float sinB = sin(B), cosB = cos(B); // Y-axis rotation
+    float sinC = sin(C), cosC = cos(C); // Z-axis rotation
+
+    // Rotate around Z
+    float x1 = i;
+    float y1 = j * cosA - k * sinA;
+    float z1 = j * sinA + k * cosA;
+
+    // Rotate around Y
+    float x2 = x1 * cosB + z1 * sinB;
+    float y2 = y1;
+    float z2 = -x1 * sinB + z1 * cosB;
+
+    // Rotate around X
+    float x3 = x2 * cosC - y2 * sinC;
+    float y3 = x2 * sinC + y2 * cosC;
+    float z3 = z2;
+
+    x = x3;
+    y = y3;
+    z = z3 + cam;
     ooz = 1 / z;
+    
     xproj = (int)(WIDTH / 2 + x * zdist * ooz * 2);
     yproj = (int)(HEIGHT / 2 + y * zdist * ooz);
     screenpos = xproj + yproj * WIDTH;
