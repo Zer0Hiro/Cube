@@ -45,9 +45,9 @@ int main()
         memset(buffer, background, sizeof(buffer));
         memset(zbuffer, 0, sizeof(zbuffer));
 
-        for (i = -cWidth / 2; i < cWidth / 2; i += 0.23)
+        for (i = -cWidth / 2; i < cWidth / 2; i += 0.34)
         {
-            for (j = -cWidth / 2; j < cWidth / 2; j += 0.23)
+            for (j = -cWidth / 2; j < cWidth / 2; j += 0.34)
             {
                 calculatePoint(i, j, cWidth / 2, '@', "\033[31m");  // Z fixed
                 calculatePoint(i, j, -cWidth / 2, '#', "\033[32m"); // -Z fixed
