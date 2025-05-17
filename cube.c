@@ -26,11 +26,6 @@ float ooz;        // z-buffer 1/z
 float x, y, z; // Point coords
 float A, B, C; // Angle
 
-//  calculate XYZ for a point
-float calcX(int i, int j, int k);
-float calcY(int i, int j, int k);
-float calcZ(int i, int j, int k);
-
 // Calculate coordinates of a point
 void calculatePoint(int i, int j, int k, int sym, char *color);
 
