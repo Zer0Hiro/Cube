@@ -31,7 +31,7 @@ void calculatePoint(int i, int j, int k, int sym, char *color);
 
 int main()
 {
-    float i, j;
+    float i, j, g;
     int k;
     char *lastcolor, *newcolor;
 
@@ -42,16 +42,19 @@ int main()
         memset(buffer, background, sizeof(buffer));
         memset(zbuffer, 0, sizeof(zbuffer));
 
-        for (i = -cWidth / 2; i < cWidth / 2; i += 0.34)
+        for (i = -cWidth / 2; i < cWidth / 2; i += 1)
         {
-            for (j = -cWidth / 2; j < cWidth / 2; j += 0.34)
+            for (j = -cWidth / 2; j < cWidth / 2; j += 1)
             {
-                calculatePoint(i, j, cWidth / 2, '@', "\033[31m");  // Z fixed
-                calculatePoint(i, j, -cWidth / 2, '#', "\033[32m"); // -Z fixed
-                calculatePoint(cWidth / 2, i, j, '%', "\033[33m");  // X fixed
-                calculatePoint(-cWidth / 2, i, j, '&', "\033[0m");  // -X fixed
-                calculatePoint(i, cWidth / 2, j, 'O', "\033[34m");  // Y fixed
-                calculatePoint(i, -cWidth / 2, j, 'H', "\033[35m"); // -Y fixed
+                for(g = -1; g <= 1; g+= 1)
+                {
+                    calculatePoint(i, j, g, '@', "\033[31m");  // Z fixed
+                    calculatePoint(i, j, -g, '#', "\033[32m"); // -Z fixed
+                    calculatePoint(g, i, j, '%', "\033[33m");  // X fixed
+                    calculatePoint(-g, i, j, '&', "\033[0m");  // -X fixed
+                    calculatePoint(i, -g, j, 'O', "\033[34m");  // Y fixed
+                    calculatePoint(i, g, j, 'H', "\033[35m"); // -Y fixed
+                }
             }
         }
 
